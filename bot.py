@@ -9,16 +9,6 @@ db.execute("CREATE TABLE IF NOT EXISTS threads (channel_id TEXT PRIMARY KEY, thr
 db.execute("CREATE TABLE IF NOT EXISTS disabled (channel_id TEXT PRIMARY KEY, value INTEGER)")
 
 def get_thread(channel_id):
-    # use a hashpmap to get a thread id for each user id.
-    # if there is no thread id for the user id, create a new thread and return the thread id
-
-    # if channel_id in map:
-    #     return map[channel_id]
-
-    # thread = gpt.beta.threads.create()
-    # map[channel_id] = thread.id
-    # return thread.id
-
     result = db.execute("SELECT thread_id FROM threads WHERE channel_id = ?", (channel_id,)).fetchone()
 
     if result:
@@ -33,10 +23,6 @@ def get_thread(channel_id):
 
 
 def get_disabled(channel_id):
-    # if channel_id in disabled:
-    #     return disabled[channel_id]
-    # return False
-
     result = db.execute("SELECT value FROM disabled WHERE channel_id = ?", (channel_id,)).fetchone()
 
     if result:
@@ -45,8 +31,6 @@ def get_disabled(channel_id):
     return False
 
 def set_disabled(channel_id, value):
-    # disabled[channel_id] = value
-
     db.execute("INSERT OR REPLACE INTO disabled (channel_id, value) VALUES (?, ?)", (channel_id, 1 if value else 0))
     db.commit()
 
@@ -64,7 +48,6 @@ class MyClient(discord.Client):
         print(f'Logged on as {self.user}!')
 
     async def on_message(self, message):
-        #reply 
         if message.author == self.user:
             return
 
